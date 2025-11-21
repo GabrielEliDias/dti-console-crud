@@ -1,18 +1,20 @@
-from datetime import datetime as dt
+import datetime
 
 class Livro:
-    def __init__(self, id, titulo, autor, DataPublicacao, resumo, numero_paginas=None, data_cadastro=None):
-        self.Id = id
-        self.Titulo = titulo
-        self.Autor = autor
-
-        data_limpa = DataPublicacao.split(" ")[0]  # Tratamento para evitar quebras por presenças de horas, minutos e segundos.
-        self.DataPublicacao = dt.strptime(data_limpa, "%Y-%m-%d").date()
-
+    def __init__(self, id, titulo, autor, data_publicacao, resumo, numero_paginas=None, data_cadastro=None):
+        self.id = id
+        self.titulo = titulo
+        self.autor = autor
+        
+        self.data_publicacao = data_publicacao 
+        
         self.resumo = resumo
-        self.NumeroPaginas = numero_paginas
-        self.DataCadastro = data_cadastro
+        self.numero_paginas = numero_paginas
+        self.data_cadastro = data_cadastro
 
     def __str__(self):
-        return f"{self.titulo} ({self.autor}, {self.data_publicacao})"
-
+        data_fmt = self.data_publicacao.strftime('%d/%m/%Y') if self.data_publicacao else "Data desc."
+        return f"{self.titulo} ({self.autor}) - {data_fmt}"
+    
+    def __repr__(self):
+        return f"Livro(id={self.id}, titulo='{self.titulo}')"
