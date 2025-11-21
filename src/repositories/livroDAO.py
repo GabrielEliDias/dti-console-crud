@@ -113,6 +113,25 @@ def remover_livro(livro_id):
         conn.commit()
             
     except sqlite3.Error as e:
-        print(f"Erro ao buscar livro por ID: {e}")
+        raise sqlite3.Error(f"Erro ao buscar livro por ID: {e}")
     finally:
         conn.close()
+
+def alterar_livro(livro):
+
+    conn = get_conexao()
+    cursor = conn.cursor()
+
+    SQL_COMANDO = 'UPDATE Livros SET Titulo = ?, Autor = ?, DataPublicacao = ?, Resumo = ?, NumeroPaginas = ? WHERE id = ?'
+
+    try:
+        valores = (livro.titulo, livro.autor, str(livro.data_publicacao), livro.resumo, livro.numero_paginas, livro.id)
+
+        cursor.execute(SQL_COMANDO, valores)
+        conn.commit()
+            
+    except sqlite3.Error as e:
+        raise sqlite3.Error(f'Erro ao substituir os valores do Livro: {e}')
+    finally:
+        conn.close()
+
