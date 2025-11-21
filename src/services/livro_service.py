@@ -1,8 +1,9 @@
 from models.livro import Livro
-from datetime import datetime
+from datetime import datetime, date
 from repositories.livroDAO import adicionar_livro as dao_adicionar_livro
 from repositories.livroDAO import listar_livro as dao_listar_livro_por_id
 from repositories.livroDAO import remover_livro as dao_remover_livro_por_id
+from repositories.livroDAO import alterar_livro
 
 def adicionar_livro(titulo, autor, data_publicacao, resumo, numero_paginas):
 
@@ -74,3 +75,19 @@ def remover_livro_por_id(livro_id):
         raise ValueError(f"Nenhum livro encontrado com o ID {livro_id_int}.")
     
     dao_remover_livro_por_id(livro_id_int)
+
+def modificar_livro_por_id(livro):
+
+    if isinstance(livro.data_publicacao, str):
+        try:
+            livro.data_publicacao = datetime.strptime(livro.data_publicacao, "%Y-%m-%d").date()
+        except ValueError:
+            raise ValueError("A data de publicação deve estar no formato AAAA-MM-DD.")
+
+    hoje = date.today()
+
+    if livro.data_publicacao > hoje:
+        raise ValueError('A data de publicação é invalida')
+    
+    alterar_livro(livro)
+    
