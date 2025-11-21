@@ -13,6 +13,7 @@ def adicionar_livro(titulo, autor, data_publicacao, resumo, numero_paginas):
     if not autor:
         raise ValueError("O autor do livro não pode ser vazio.")
     
+    
     try:
         data_publicacao_dt = datetime.strptime(data_publicacao, "%Y-%m-%d").date()
     except ValueError:
@@ -36,6 +37,11 @@ def adicionar_livro(titulo, autor, data_publicacao, resumo, numero_paginas):
         resumo=resumo,
         numero_paginas=numero_paginas_int 
     )
+
+    hoje = date.today()
+
+    if livro.data_publicacao > hoje:
+        raise ValueError('A data de publicação é invalida')
 
     dao_adicionar_livro(livro)
 
