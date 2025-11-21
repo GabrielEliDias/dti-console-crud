@@ -2,6 +2,7 @@
 
 src/data/db_livros.db
 
+src/service/__pycache__
 src/data/__pycache__
 src/models/__pycache__
 src/repositories/__pycache__
