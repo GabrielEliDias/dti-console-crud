@@ -1,19 +1,48 @@
 import textwrap
+from data.database import inicializar_banco
 from repositories.livroDAO import listar_livros
-from services.livro_service import adicionar_livro, livro_por_id, remover_livro_por_id
+from services.livro_service import adicionar_livro, livro_por_id, remover_livro_por_id, modificar_livro_por_id
 
-def dados_livro_view():
-    print('\n')
-    print('--------- Buscar livro por ID ---------')
-    print('\n')
+def main_menu():
 
-    try:
-        livro_id = int(input('Informe o ID do livro que deseja buscar: '))
-    except ValueError:
-        print("ID inválido. Tente novamente.")
-        return
-    
-    livro = livro_por_id(livro_id)
+    inicializar_banco()
+
+    print('----------------------------------------')
+    print('  Bem-vindo a gerenciador de livros!')
+    print('----------------------------------------')
+    while True:
+        print('\n')
+
+        print('-- Qual ação deseja realizar no gerenciador de livros? --')
+        print('1 - Listar todos os livros do gerenciador de livros')
+        print('2 - Adicionar livro ao gerenciador de livros')
+        print('3 - Buscar livro por ID')
+        print('4 - Atualizar o cadastro de um livro')
+        print('5 - Remover livro do gerenciador de livros')
+        print('6 - Sair do programa')
+        print('\n')
+
+        escolha = input('>')
+
+        if escolha == '1':
+            listar_livros_view()
+        elif escolha == '2':
+            registrar_livro_view()
+        elif escolha == '3':
+            dados_livro_view()
+        elif escolha == '4':
+            alterar_livro_info_view()
+        elif escolha == '5':
+            deletar_livro_view()
+        elif escolha == '6':
+            print('Fechando o programa.....')
+            return
+        else: 
+            print("Comando não identificado, por favor insira o comando novamente.")
+            continue
+
+
+def livro_detalhes_view(livro):
 
     print('\n ')
 
@@ -32,6 +61,27 @@ def dados_livro_view():
         
     print('\n')
 
+def dados_livro_view():
+    print('\n')
+    print('--------- Buscar livro por ID ---------')
+    print('\n')
+
+    livro_id = input('Informe o ID do livro que deseja buscar: ')
+
+    if not livro_id.isdigit():
+        print('Erro: Não foi digitado numero algum')
+        return
+
+    try:
+        livro_id_int = int(livro_id)
+    except ValueError:
+        print("ID inválido. Tente novamente.")
+        return
+    
+    livro = livro_por_id(livro_id_int)
+
+    livro_detalhes_view(livro)
+
 
 
 def listar_livros_view():
@@ -43,19 +93,7 @@ def listar_livros_view():
     livros = listar_livros()
 
     for livro in livros:
-        print(f"[ID: {livro.id}] {livro.titulo} - {livro.autor}")
-        
-        print(f"      {livro.numero_paginas} págs | Lançamento: {livro.data_publicacao}")
-        print(f'Resumo:')
-
-        if not livro.resumo == None:
-            print(textwrap.fill(livro.resumo, width=60))
-        else:
-            print(f'Não foi cadastrado um resumo para o {livro.titulo}')
-        
-        print("-" * 40)
-        
-        print('\n')
+        livro_detalhes_view(livro)
 
 def registrar_livro_view():
     print("\n")
@@ -113,19 +151,8 @@ def deletar_livro_view():
         return
 
     print('--- Deseja remover o livro detalhado a baixo? ---')
-    print(f"[ID: {livro.id}] {livro.titulo} - {livro.autor}")
-        
-    print(f"      {livro.numero_paginas} págs | Lançamento: {livro.data_publicacao}")
-    print(f'Resumo:')
-
-    if not livro.resumo == None:
-        print(textwrap.fill(livro.resumo, width=60))
-    else:
-        print(f'Não foi cadastrado um resumo para o {livro.titulo}')
-        
-    print("-" * 40)
-        
-    print('\n')
+    
+    livro_detalhes_view(livro)
 
     if input('Confirme a remoção do livro (S \ N) ').strip().upper() == 'S':
         remover_livro_por_id(livro_id)
@@ -139,14 +166,68 @@ def alterar_livro_info_view():
     print('---------- Alterar informações de livro por id ----------')
     print('\n')
 
-    # Pedir o id do livro
+    livro_id = input('Digite o id do livro a ser modificado: ')
 
-    # buscar o id e perguntar para confirmar se esse é o livro que quer mudar(view)
+    if not livro_id.isdigit():
+        print('Erro: Valor escrito é considerado invalido')
+        return
 
-    # buscar(DAO) e criar uma cópia do objeto para modificar(service)
+    try:
+        livro_id_int = int(livro_id)
+    except ValueError as e:
+        print(f'Erro: {e}')
 
-    # Salvar a nova cópia e enviar ao Service para enviar ao DAO e salver no final
+    livro = livro_por_id(livro_id_int)
 
-    # Iremos realizar uma lógica parecia com a de criação de um livro, onde vamos perguntar no que a pessoa quer mudar cada coisa. Se a pessoa der "" devemos não modificar os dados originais.
+    if livro == None:
+        print('O id digitado não existe!')
+        return
 
-    # Salvar a informação no mesmo ponto de id do banco de dados
+    livro_detalhes_view(livro)
+
+    escolha = input('Confirme que deseja modificar os dados do livro acima (S \ N): ').strip().upper() == 'S'
+
+    if escolha:
+        print('---------- Campos a modificar ----------')
+        print('Caso não queria modificar algum campo somente de enter!')
+
+        titulo = input('Novo título: ')
+        autor = input('Novo autor: ')
+        data_publicacao = input('Nova data de lançamento (YYYY-MM-DD): ')
+        resumo = input('Novo resumo: ')
+        numero_paginas = input('Novo número de páginas: ')
+
+        if titulo.strip():
+            livro.titulo = titulo
+        
+        if autor.strip():
+            livro.autor = autor
+        
+        if data_publicacao.strip():
+            livro.data_publicacao = data_publicacao
+        
+        if resumo.strip():
+            livro.resumo = resumo
+        
+        if numero_paginas.strip():
+            try:
+                livro.numero_paginas = int(numero_paginas)
+            except ValueError as e:
+                print(f'Erro: {e} \n Cancelando a modificação.')
+                return
+
+        try:
+            if input('Deseja confirmar as mudanças? Digite S para Confirmar e qualquer coisa para Cancelar\n >').strip().upper() == 'S':
+
+                modificar_livro_por_id(livro)
+
+                print("Livro modificado com sucesso!")
+            else:
+                print('Modificações canceladas, retornando ao menu principal.....')
+        except ValueError as e:
+            print(f'Erro: {e}')
+            return
+
+    else: 
+        print('Confirmação Invalidada, fechando o sistema e voltando ao menu...')
+        return
