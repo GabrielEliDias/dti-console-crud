@@ -78,7 +78,15 @@ def dados_livro_view():
         print("ID inválido. Tente novamente.")
         return
     
-    livro = livro_por_id(livro_id_int)
+    try:
+        livro = livro_por_id(livro_id_int)
+    except ValueError as e:
+        print(f'Erro: {e}')
+        return
+    
+    if livro == None:
+        print('O id digitado não existe!')
+        return
 
     livro_detalhes_view(livro)
 
@@ -98,10 +106,11 @@ def listar_livros_view():
 def registrar_livro_view():
     print("\n")
     print('--------- Registrar novo livro ---------')
+    print('Todos que forem obrigatório devem ser preenchidos.')
 
-    titulo = input('Título do livro: ')
-    autor = input('Autor do livro: ')
-    data_publicacao = input('Data de publicação (AAAA-MM-DD): ')
+    titulo = input('Título do livro(Obrigatório): ')
+    autor = input('Autor do livro(Obrigatório): ')
+    data_publicacao = input('Data de publicação (AAAA-MM-DD)(Obrigatório): ')
     resumo = input('Resumo do livro: ')
     numero_paginas = input('Número de páginas: ')
 
@@ -142,8 +151,16 @@ def deletar_livro_view():
         print(f"ID inválido {e}. Tente novamente.")
         return
     
-    livro = livro_por_id(livro_id)
-
+    try:
+        livro = livro_por_id(livro_id)
+    except ValueError as e:
+        print(f'Erro: {e}')
+        return
+    
+    if livro == None:
+        print('O id digitado não existe!')
+        return
+    
     print('\n ')
 
     if not livro:
@@ -176,9 +193,14 @@ def alterar_livro_info_view():
         livro_id_int = int(livro_id)
     except ValueError as e:
         print(f'Erro: {e}')
-
-    livro = livro_por_id(livro_id_int)
-
+        return
+    
+    try:
+        livro = livro_por_id(livro_id_int)
+    except ValueError as e:
+        print(f'Erro: {e}')
+        return
+    
     if livro == None:
         print('O id digitado não existe!')
         return
