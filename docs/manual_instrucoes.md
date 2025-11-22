@@ -10,19 +10,25 @@ A forma mais simples de rodar a aplicação, garantindo que o ambiente seja idê
 
 ### Pré-requisitos
 - Docker e Docker Compose instalados.
+- Git instalado.
 
 ### Passo a passo
-1. Construir a imagem:
+1. Clone o repositório no seu computador:
+```bash
+git clone https://github.com/GabrielEliDias/dti-console-crud.git
+```
+
+2. Abra o terminal do projeoto e construir a imagem:
 ```bash
 docker compose build
 ```
 
-2. Rodar a aplicação (modo interativo):
+3. Rodar a aplicação (modo interativo):
 ```bash
 docker compose run app
 ```
 
-> Nota sobre persistência: o banco de dados `livraria.db` será salvo em `src/data/` na sua máquina local. Feche e abra o container quando desejar; os livros serão mantidos.
+> Nota sobre persistência: o banco de dados `db_livros.db` será salvo em `src/data/` na sua máquina local. Feche e abra o container quando desejar; os livros serão mantidos.
 
 ---
 
