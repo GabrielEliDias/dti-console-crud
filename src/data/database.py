@@ -2,8 +2,8 @@ import sqlite3
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).parent.parent.parent
-DB_PATH = ROOT_DIR / 'src' / 'data' / 'db_livros.db'
-SCRIPT_PATH = ROOT_DIR / 'sql' / 'init_db.sql' 
+DB_PATH = Path("/app/src/data/db_livros.db")
+SCRIPT_PATH = Path("/app/sql/init_db.sql")
 
 def inicializar_banco():
     conn = None
