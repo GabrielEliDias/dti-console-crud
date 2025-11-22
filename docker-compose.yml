@@ -8,5 +8,5 @@ services:
     stdin_open: true 
     tty: true
     volumes:
-      - ./data:/app/data
+      - ./src/data:/app/src/data
       - ./logs:/app/logs
